@@ -61,13 +61,14 @@ This repository contains the full **MVP implementation** of VISIBI, including do
 
 ```mermaid
 flowchart LR
-    A[User Input Form] --> B(Supabase: scan_jobs)
+    A[User Input Form] --> B[Supabase: scan_jobs]
     B --> C[Worker Poller]
     C --> D1[ChatGPT]
     C --> D2[Gemini]
     C --> D3[Perplexity]
-    D1 --> E[Parser + Scoring]
+    D1 --> E[Parser and Scoring]
     D2 --> E
     D3 --> E
     E --> F[Supabase: engine_results, citations, insights]
     F --> G[Dashboard]
+```
