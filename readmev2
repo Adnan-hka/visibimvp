@@ -1,0 +1,201 @@
+# VISIBI – AI Visibility Intelligence Platform  
+### *MVP v2.1 – Developer & Architecture Documentation*
+
+VISIBI is an AI Visibility Analytics Platform that measures how often brands appear inside conversations across ChatGPT, Gemini, and Perplexity.
+
+This repository contains:
+
+- The VISIBI architecture
+- Full MVP backend queue system (Supabase + Deno Worker)
+- Database schema (with micro-task queue)
+- AI prompt templates
+- Output examples
+- Dashboard logic
+- Acceptance criteria
+- Phase 2 roadmap
+
+VISIBI enables brands to answer a simple but powerful question:
+
+### **“Where does my brand appear inside AI conversations?”**
+
+---
+
+# 🚀 1. Features (MVP v2.1)
+
+### ✔ Seed-topic scanning  
+### ✔ ChatGPT + Gemini + Perplexity visibility analysis  
+### ✔ Brand mentions  
+### ✔ Citation extraction  
+### ✔ Competitor aggregation  
+### ✔ Sentiment classification  
+### ✔ Content-type insights  
+### ✔ Supabase queue-based worker system  
+### ✔ Dashboard (Next.js 14)  
+### ✔ CSV export  
+
+This MVP is built to scale safely with AI APIs and prevent timeouts.
+
+---
+
+# 🧠 2. System Architecture (Queue-Based Processing)
+
+```mermaid
+flowchart LR
+    A[User Input Form] --> B[Supabase: scan_jobs]
+    B --> C[DB Trigger: split_job]
+    C --> D[job_tasks queue]
+    D --> E[pg_cron calls Deno Worker]
+    E --> F[AI Engines]
+    F --> G[Parser and Scoring]
+    G --> H[engine_results, citations, insights]
+    H --> I[cron: check_job_completion]
+    I --> J[scan_jobs.status = done]
+    J --> K[Dashboard]
+```
+
+---
+
+# 3. Repository Structure
+
+```
+visibi-platform/
+│
+├── README.md
+│
+├── docs/
+│   ├── mvp-scope-contract.md
+│   ├── milestones.md
+│   ├── expected-output-examples.md
+│   ├── validation-checklist.md
+│   ├── ai-prompt-templates.md
+│   ├── supabase-schema.sql.md
+│   ├── deno-worker.md
+│   ├── phase-2-blueprint.md
+│
+├── frontend/
+│   └── (Next.js app / dashboard)
+│
+└── supabase/
+    ├── migrations/
+    └── functions/scan/index.ts
+```
+
+---
+
+# 4. Technology Stack
+
+| Layer          | Technology                                |
+| -------------- | ----------------------------------------- |
+| Frontend       | Next.js 14 + React Server Components      |
+| Backend Worker | Supabase Edge Functions (Deno)            |
+| Database       | PostgreSQL (Supabase)                     |
+| Queue System   | `job_tasks` table + `pg_cron`             |
+| Aggregation    | SQL RPC functions                         |
+| AI Providers   | OpenAI ChatGPT, Google Gemini, Perplexity |
+
+---
+
+# 5. Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Adnan-hka/visibimvp
+cd visibi-platform
+
+# Install frontend:
+cd frontend
+npm install
+npm run dev
+
+# Local Supabase
+supabase start
+# Deploy Edge Function
+supabase functions deploy scan
+```
+
+---
+
+# 6. Important Documentation
+
+All documentation is inside the `/docs` directory:
+| File                          | Description                                   |
+| ----------------------------- | --------------------------------------------- |
+| `mvp-scope-contract.md`       | Final agreed scope with developer             |
+| `milestones.md`               | Fixed-milestone plan                          |
+| `expected-output-examples.md` | Exact JSON structures the worker must produce |
+| `validation-checklist.md`     | QA acceptance sheet                           |
+| `ai-prompt-templates.md`      | Prompts used by the worker                    |
+| `supabase-schema.sql.md`      | Full database + queue + cron SQL              |
+| `deno-worker.md`              | Full Deno Edge worker code                    |
+| `phase-2-blueprint.md`        | Future expansion                              |
+
+---
+
+# 🧪 7. Testing the Worker (Local)
+
+```bash
+curl -X POST http://localhost:54321/functions/v1/scan
+```
+
+---
+
+# 🧩 8. Dashboard (Next.js)
+
+The dashboard polls the job until it is done, then displays:
+
+- Visibility score per engine/topic
+- Competitor share of voice
+- Citation table
+- Content insights
+- CSV export
+
+(See `expected-output-examples.md` for API shapes.)
+
+---
+
+# 🚦 9. Acceptance Criteria
+
+The MVP is complete when:
+
+- A new `scan_job` is created from the form
+- The trigger creates `job_tasks`
+- `pg_cron` picks tasks and runs them
+- Worker completes all tasks
+- `check_job_completion` marks job as done
+- Dashboard displays correct data
+
+The complete checklist is in `docs/validation-checklist.md`.
+
+---
+
+# 🌱 10. Phase 2 Roadmap
+
+- Rolling 30-day visibility window
+- Scheduled scans
+- 100+ query expansions
+- Multi-brand accounts
+- GPT Browser mode scraping
+- Regional engine variants
+- Claude integration
+- PDF/HTML report exports
+
+(See `docs/phase-2-blueprint.md`.)
+
+---
+
+# 🔐 11. Environment Variables
+
+```env
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_KEY=
+OPENAI_API_KEY=
+GEMINI_API_KEY=
+PERPLEXITY_API_KEY=
+```
+
+---
+
+# 📄 12. License
+
+© 2025 VISIBI – All rights reserved.
